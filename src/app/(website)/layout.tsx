@@ -1,6 +1,6 @@
 export {metadata} from '@/lib/layout-config'
 import {inter} from '@/lib/layout-config'
-import '@/app/globals.css'
+import '@/app/(website)/globals.css'
 
 import {cn} from '@/lib/utils'
 
