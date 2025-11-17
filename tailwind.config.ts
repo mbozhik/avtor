@@ -11,12 +11,29 @@ export default {
       sans: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
     },
     colors: ({colors}) => ({
-      black: colors.black,
-      white: colors.white,
-      neutral: colors.neutral,
+      background: '#1A191B',
+
+      foreground: {
+        DEFAULT: '#FFFFFF',
+        light: '#D1D1D1',
+        dark: '#8A898A',
+      },
+
+      gray: {
+        light: '#D0D0D0',
+        medium: '#6E6D6F',
+        dark: '#151416',
+      },
+
+      red: '#5C0000',
+
       transparent: colors.transparent,
     }),
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'gradient-red': 'linear-gradient(180deg, #D8092F 0%, #7B020C 82%, #5C0000 100%)',
+      },
+    },
   },
   plugins: [],
 } satisfies Config

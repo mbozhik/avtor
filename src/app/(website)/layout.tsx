@@ -11,7 +11,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body className={cn(inter.variable, 'bg-neutral-950 text-white', 'font-sans antialiased')}>{children}</body>
+      <body className={cn(inter.variable, 'bg-background text-foreground', 'font-sans antialiased')}>{children}</body>
     </html>
   )
 }
