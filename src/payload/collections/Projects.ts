@@ -37,6 +37,16 @@ export const Projects: CollectionConfig = {
       required: true,
     },
     {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      admin: {
+        components: {
+          Field: {clientProps: {source: 'title'}, exportName: 'SlugField', path: '/src/payload/ui/slug-field.tsx'},
+        },
+      },
+    },
+    {
       name: 'details',
       type: 'group',
       fields: [

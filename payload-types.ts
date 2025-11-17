@@ -169,6 +169,7 @@ export interface Project {
   title: string;
   status: 'implementation' | 'free_scripts';
   poster: string | Media;
+  slug: string;
   details: {
     description: string;
     screenwriter: string;
@@ -313,6 +314,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
   status?: T;
   poster?: T;
+  slug?: T;
   details?:
     | T
     | {
