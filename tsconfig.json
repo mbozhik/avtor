@@ -22,7 +22,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "~/*": ["./src/components/*"],
-      "~~/*": ["./src/components/App/*"],
+      "~~/*": ["./src/components/app/*"],
       "$/*": ["./src/assets/*"],
       "@payload/*": ["./src/payload/*"],
       "@payload-config": ["./payload.config.ts"],
