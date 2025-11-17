@@ -14,7 +14,43 @@ export const Projects: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    // tags -> 3 types –> relation
+    {
+      name: 'tags',
+      type: 'group',
+      required: true,
+      fields: [
+        {
+          name: 'mode',
+          type: 'relationship',
+          relationTo: 'tags',
+          filterOptions: {type: {equals: 'mode'}},
+          required: true,
+        },
+        {
+          name: 'format',
+          type: 'relationship',
+          relationTo: 'tags',
+          filterOptions: {type: {equals: 'format'}},
+          required: true,
+        },
+        {
+          name: 'genre',
+          type: 'relationship',
+          relationTo: 'tags',
+          filterOptions: {type: {equals: 'genre'}},
+          hasMany: true,
+          required: true,
+        },
+        {
+          name: 'audience',
+          type: 'relationship',
+          relationTo: 'tags',
+          filterOptions: {type: {equals: 'audience'}},
+          hasMany: true,
+          required: true,
+        },
+      ],
+    },
     {
       name: 'status',
       type: 'select',
@@ -49,6 +85,7 @@ export const Projects: CollectionConfig = {
     {
       name: 'details',
       type: 'group',
+      required: true,
       fields: [
         {
           name: 'description',
@@ -71,6 +108,7 @@ export const Projects: CollectionConfig = {
     {
       name: 'roadmap',
       type: 'group',
+      required: true,
       fields: [
         {
           name: 'production_date',

@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     projects: Project;
+    tags: Tag;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -167,6 +169,12 @@ export interface Media {
 export interface Project {
   id: string;
   title: string;
+  tags: {
+    mode: string | Tag;
+    format: string | Tag;
+    genre: (string | Tag)[];
+    audience: (string | Tag)[];
+  };
   status: 'implementation' | 'free_scripts';
   poster: string | Media;
   slug: string;
@@ -185,6 +193,18 @@ export interface Project {
    */
   report?: string | null;
   references?: (string | Project)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: string;
+  name: string;
+  type: 'mode' | 'format' | 'genre' | 'audience';
+  slug: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -223,6 +243,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: string | Project;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: string | Tag;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -312,6 +336,14 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
+  tags?:
+    | T
+    | {
+        mode?: T;
+        format?: T;
+        genre?: T;
+        audience?: T;
+      };
   status?: T;
   poster?: T;
   slug?: T;
@@ -331,6 +363,17 @@ export interface ProjectsSelect<T extends boolean = true> {
       };
   report?: T;
   references?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  name?: T;
+  type?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }
