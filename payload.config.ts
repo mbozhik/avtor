@@ -10,6 +10,7 @@ import {buildConfig} from 'payload'
 
 import {Users} from '@payload/collections/Users'
 import {Media} from '@payload/collections/Media'
+import {Details} from '@payload/collections/Details'
 import {Projects} from '@payload/collections/Projects'
 import {Tags} from '@payload/collections/Tags'
 
@@ -24,7 +25,7 @@ export default buildConfig({
     },
   },
 
-  collections: [Users, Media, Projects, Tags],
+  collections: [Users, Media, Details, Projects, Tags],
 
   editor: lexicalEditor(),
   typescript: {
