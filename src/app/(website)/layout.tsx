@@ -5,6 +5,7 @@ import '@/app/(website)/globals.css'
 import {cn} from '@/lib/utils'
 
 import Header from '~/global/header'
+import Footer from '~/global/footer'
 import YandexMetrika from '~/global/analytics'
 
 export default function RootLayout({
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body className={cn(inter.variable, 'bg-background text-foreground', 'font-sans tracking-[-0.015em] antialiased')}>
         <Header />
         {children}
+        <Footer />
 
         {process.env.NODE_ENV === 'production' && <YandexMetrika />}
       </body>

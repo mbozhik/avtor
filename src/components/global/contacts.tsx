@@ -29,7 +29,7 @@ const DATA = {
 
 export default function Contacts() {
   return (
-    <section data-section="contacts-index" className={cn(BOX, 'py-10 xl:p-4', 'grid grid-cols-2 sm:grid-cols-1 xl:gap-20 sm:gap-8', 'bg-gray-dark rounded-[10px]')}>
+    <section data-section="contacts-index" className={cn(BOX, 'py-10 sm:p-4', 'grid grid-cols-2 sm:grid-cols-1 xl:gap-20 sm:gap-8', 'bg-gray-dark rounded-[10px]')}>
       {Object.entries(DATA).map(([key, person]) => (
         <div key={key} className={cn('grid grid-cols-2 sm:grid-cols-1 gap-20 xl:gap-14 sm:gap-3 pr-20 xl:pr-14 sm:pr-0', 'bg-gray-dark rounded-[10px]', 'group')}>
           <H3 className="justify-self-end sm:justify-self-start">{person.name}</H3>
