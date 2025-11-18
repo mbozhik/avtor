@@ -13,8 +13,8 @@ import {H3, P} from '~/ui/typography'
 type DetailOption = Detail['option']
 
 const DATA: Record<DetailOption, {emblem: StaticImageData | null; subject: string}> = {
-  mk_support: {emblem: MkImage, subject: 'Поддержано Фондом Кино'},
   fk_support: {emblem: FkImage, subject: 'Поддержано Минкультуры России'},
+  mk_support: {emblem: MkImage, subject: 'Поддержано Фондом Кино'},
   iip_support: {emblem: null, subject: 'Поддержано иными институтами поддержки'},
 }
 
