@@ -1,6 +1,7 @@
 import Container from '~/global/container'
 import Details from '~~/index/details'
 import Projects from '~~/index/projects'
+import Contacts from '~/global/contacts'
 
 export default function IndexPage() {
   return (
@@ -8,6 +9,7 @@ export default function IndexPage() {
       <Details />
       <Projects status="implementation" />
       <Projects status="free_scripts" />
+      <Contacts />
     </Container>
   )
 }
