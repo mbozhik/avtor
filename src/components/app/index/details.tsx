@@ -8,6 +8,7 @@ import {payload} from '@/lib/payload'
 import {cn} from '@/lib/utils'
 
 import Image, {type StaticImageData} from 'next/image'
+import {H3, P} from '~/ui/typography'
 
 type DetailOption = Detail['option']
 
@@ -40,8 +41,8 @@ export default async function Details() {
               )}
 
               <div className="flex-1 flex flex-col justify-end gap-1.25 xl:gap-1.5">
-                <h3 className={cn('text-2xl sm:text-xl leading-[1.1]! font-semibold')}>Счетчик проектов</h3>
-                <p className={cn('text-base sm:text-sm leading-[1.3]! max-w-[20ch] text-balance text-foreground-dark')}>{data.subject}</p>
+                <H3>Счетчик проектов</H3>
+                <P className="max-w-[20ch] text-balance text-foreground-dark">{data.subject}</P>
               </div>
             </div>
 
