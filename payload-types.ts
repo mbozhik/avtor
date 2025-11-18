@@ -204,11 +204,25 @@ export interface Project {
     production_budget?: string | null;
     box_office_fees?: string | null;
   };
-  /**
-   * Сведения о проекте (ссылка на ЕАИС)
-   */
-  report?: string | null;
-  references?: (string | Project)[] | null;
+  references?:
+    | {
+        item: {
+          title: string;
+          source: string;
+          /**
+           * Сведения о проекте (ссылка на ЕАИС)
+           */
+          report?: string | null;
+          descriptors: {
+            country: string;
+            year: number;
+            screenwriter: string;
+          };
+          poster: string | Media;
+        };
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -391,8 +405,26 @@ export interface ProjectsSelect<T extends boolean = true> {
         production_budget?: T;
         box_office_fees?: T;
       };
-  report?: T;
-  references?: T;
+  references?:
+    | T
+    | {
+        item?:
+          | T
+          | {
+              title?: T;
+              source?: T;
+              report?: T;
+              descriptors?:
+                | T
+                | {
+                    country?: T;
+                    year?: T;
+                    screenwriter?: T;
+                  };
+              poster?: T;
+            };
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

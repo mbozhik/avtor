@@ -126,17 +126,62 @@ export const Projects: CollectionConfig = {
       ],
     },
     {
-      name: 'report',
-      type: 'text',
-      admin: {
-        description: 'Сведения о проекте (ссылка на ЕАИС)',
-      },
-    },
-    {
       name: 'references',
-      type: 'relationship',
-      relationTo: 'projects',
-      hasMany: true,
+      type: 'array',
+      fields: [
+        {
+          name: 'item',
+          type: 'group',
+          required: true,
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'source',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'report',
+              type: 'text',
+              admin: {
+                description: 'Сведения о проекте (ссылка на ЕАИС)',
+              },
+            },
+            {
+              name: 'descriptors',
+              type: 'group',
+              required: true,
+              fields: [
+                {
+                  name: 'country',
+                  type: 'text',
+                  required: true,
+                },
+                {
+                  name: 'year',
+                  type: 'number',
+                  required: true,
+                },
+                {
+                  name: 'screenwriter',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+            },
+            {
+              name: 'poster',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+            },
+          ],
+        },
+      ],
     },
   ],
 }
