@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body className={cn(inter.variable, 'bg-background text-foreground', 'font-sans antialiased')}>
+      <body className={cn(inter.variable, 'bg-background text-foreground', 'font-sans tracking-[-0.015em] antialiased')}>
         <Header />
         {children}
 
