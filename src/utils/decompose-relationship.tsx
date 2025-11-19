@@ -3,6 +3,7 @@ import type {Project, Media} from '@payload-types'
 type ProjectTags = Project['tags']
 type SingleTag = ProjectTags['mode'] | ProjectTags['format']
 type MultiTag = ProjectTags['genre'] | ProjectTags['audience']
+export type ProjectTagsType = keyof ProjectTags
 
 export function decomposeProjectTags(tags: ProjectTags[]) {
   const getTagValue = (tag: SingleTag): string => {

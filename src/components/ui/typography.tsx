@@ -21,12 +21,14 @@ export type TypoTypes = keyof typeof TYPO_CLASSES
 export const TYPO_CLASSES = {
   h1: cn('text-5xl xl:text-4xl sm:text-2xl', 'leading-[1.1]!', 'font-semibold'),
   h3: cn('text-2xl sm:text-xl', 'leading-[1.1]!', 'font-semibold'),
+  h4: cn('text-xl sm:text-lg', 'leading-[1.1]!', 'font-medium'),
   p: cn('text-base sm:text-sm', 'leading-[1.3]!'),
   span: cn('text-sm sm:text-xs', 'leading-[1.3]!'),
 } as const
 
 export const H1 = createTypography('h1')
 export const H3 = createTypography('h3')
+export const H4 = createTypography('h4')
 export const P = createTypography('p')
 export const SPAN = createTypography('span')
 

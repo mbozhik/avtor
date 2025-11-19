@@ -12,5 +12,5 @@ export default async function Projects({status}: {status: ProjectStatus}) {
     sort: 'createdAt',
   })
 
-  return <ProjectsModule status={status} data={projects} />
+  return <ProjectsModule status={status} projects={projects} />
 }
