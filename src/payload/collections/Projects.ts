@@ -89,9 +89,16 @@ export const Projects: CollectionConfig = {
       fields: [
         {
           name: 'description',
-          type: 'textarea',
-          admin: {rows: 4},
+          type: 'array',
           required: true,
+          fields: [
+            {
+              name: 'item',
+              type: 'textarea',
+              admin: {rows: 3},
+              required: true,
+            },
+          ],
         },
         {
           name: 'screenwriter',

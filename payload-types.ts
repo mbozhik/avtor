@@ -195,7 +195,10 @@ export interface Project {
   poster: string | Media;
   slug: string;
   details: {
-    description: string;
+    description: {
+      item: string;
+      id?: string | null;
+    }[];
     screenwriter: string;
     year: number;
   };
@@ -394,7 +397,12 @@ export interface ProjectsSelect<T extends boolean = true> {
   details?:
     | T
     | {
-        description?: T;
+        description?:
+          | T
+          | {
+              item?: T;
+              id?: T;
+            };
         screenwriter?: T;
         year?: T;
       };

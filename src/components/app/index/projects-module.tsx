@@ -8,6 +8,7 @@ import {BOX} from '~/global/container'
 
 import {cn} from '@/lib/utils'
 import {decomposeProjectTags, type ProjectTagsType} from '@/utils/decompose-relationship'
+import {useProjectDialog} from '@/hooks/use-project-dialog'
 
 import {useState, useCallback, useEffect, useRef} from 'react'
 import Autoplay from 'embla-carousel-autoplay'
@@ -17,11 +18,19 @@ import {ButtonGroup, ButtonGroupSeparator} from '~/ui/button-group'
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger} from '~/ui/dropdown-menu'
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from '~/ui/carousel'
 import PayloadImage from '~/ui/payload-image'
+import ProjectDialog from '~~/index/projects-dialog'
 import {H1, H3, H4, P, SPAN} from '~/ui/typography'
+
+type Module = {projects: Project[]; projectTags: ReturnType<typeof decomposeProjectTags>; onItemClick: (slug: string) => void}
 
 export default function ProjectsModule({status, projects}: {status: ProjectStatus; projects: PaginatedDocs<Project>; tags: PaginatedDocs<Tag>}) {
   const [view, setView] = useState<'grid' | 'slider'>('slider')
   const [visibleCount, setVisibleCount] = useState(9)
+
+  const {isOpen, currentProjectSlug, openProjectDialog, closeProjectDialog} = useProjectDialog()
+
+  // Находим проект по slug из URL
+  const currentProject = currentProjectSlug ? projects.docs.find((project) => project.slug === currentProjectSlug) || null : null
 
   // Состояние для выбранных фильтров
   const [selectedFilters, setSelectedFilters] = useState<Record<ProjectTagsType, Set<string>>>({
@@ -154,10 +163,10 @@ export default function ProjectsModule({status, projects}: {status: ProjectStatu
       </div>
 
       {status === 'implementation' && view === 'slider' ? (
-        <ProjectsSlider projects={displayProjects} />
+        <ProjectsSlider projects={displayProjects} onItemClick={openProjectDialog} />
       ) : (
         <>
-          <ProjectsGrid projects={displayProjects} projectTags={projectTags} />
+          <ProjectsGrid projects={displayProjects} projectTags={projectTags} onItemClick={openProjectDialog} />
 
           {hasMore && (
             <div className="flex justify-center mt-8">
@@ -168,16 +177,19 @@ export default function ProjectsModule({status, projects}: {status: ProjectStatu
           )}
         </>
       )}
+
+      <ProjectDialog project={currentProject} isOpen={isOpen} onClose={closeProjectDialog} />
     </section>
   )
 }
-function ProjectsGrid({projects, projectTags}: {projects: Project[]; projectTags: ReturnType<typeof decomposeProjectTags>}) {
+
+function ProjectsGrid({projects, projectTags, onItemClick}: Module) {
   const projectFirstTags = projectTags.map((p) => [p.mode[0], p.audience[0]].filter(Boolean))
 
   return (
     <div data-module="grid-projects" className={cn(BOX, 'grid grid-cols-3 sm:grid-cols-1 gap-4 xl:gap-3 sm:gap-2.5')}>
       {projects.map((project, idx) => (
-        <div data-item="card-grid-projects" className={cn('relative', 'bg-gray-dark rounded-[10px] overflow-hidden', 'group')} key={project.id}>
+        <div data-item="card-grid-projects" className={cn('relative', 'bg-gray-dark rounded-[10px] overflow-hidden', 'group cursor-pointer')} key={project.id} onClick={() => onItemClick(project.slug)}>
           <div className={cn('absolute z-50 inset-0 size-full', 'flex items-end')}>
             <div className={cn('w-full p-5 xl:p-4 sm:p-3', 'space-y-1 sm:space-y-1.25', 'bg-linear-to-t from-gray-dark via-gray-dark/80 to-transparent')}>
               <H3 className="pt-10 line-clamp-1">{project.title}</H3>
@@ -201,7 +213,7 @@ function ProjectsGrid({projects, projectTags}: {projects: Project[]; projectTags
   )
 }
 
-function ProjectsSlider({projects}: {projects: Project[]}) {
+function ProjectsSlider({projects, onItemClick}: Omit<Module, 'projectTags'>) {
   const autoplayPlugin = Autoplay({
     delay: 2500,
     // stopOnMouseEnter: true,
@@ -289,7 +301,7 @@ function ProjectsSlider({projects}: {projects: Project[]}) {
       <CarouselContent className="-ml-4">
         {projects.map((project, idx) => (
           <CarouselItem className="pl-4 basis-[50%] sm:basis-full" key={idx}>
-            <div data-item="card-slider-projects" className={cn('relative', 'bg-gray-dark rounded-[10px] sm:rounded-none overflow-hidden', 'group', 'transition-all duration-500 ease-out')}>
+            <div data-item="card-slider-projects" className={cn('relative', 'bg-gray-dark rounded-[10px] sm:rounded-none overflow-hidden', 'group cursor-pointer', 'transition-all duration-500 ease-out')} onClick={() => onItemClick(project.slug)}>
               <div className="parallax overflow-hidden">
                 <div className="parallax-layer w-full h-full will-change-transform">
                   <PayloadImage className={cn('size-full object-contain', 'group-hover:scale-[1.02] ease-in-out duration-500')} resource={project.poster} />
