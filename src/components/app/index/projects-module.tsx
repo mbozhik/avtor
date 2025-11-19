@@ -10,9 +10,12 @@ import {decomposeProjectTags, type ProjectTagsType} from '@/utils/decompose-rela
 
 import {useState} from 'react'
 
+import Autoplay from 'embla-carousel-autoplay'
+
 import {Button} from '~/ui/button'
 import {ButtonGroup, ButtonGroupSeparator} from '~/ui/button-group'
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger} from '~/ui/dropdown-menu'
+import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from '~/ui/carousel'
 import PayloadImage from '~/ui/payload-image'
 import {H1, H3, H4, P, SPAN} from '~/ui/typography'
 
@@ -70,8 +73,8 @@ export default function ProjectsModule({status, projects}: {status: ProjectStatu
   const activeFiltersCount = Object.values(selectedFilters).reduce((sum, set) => sum + set.size, 0)
 
   // Фильтрация проектов
-  const filteredProjects = projectsData.filter((project, index) => {
-    const projectTag = projectTags[index]
+  const filteredProjects = projectsData.filter((_, idx) => {
+    const projectTag = projectTags[idx]
 
     // Проверяем каждый выбранный фильтр
     for (const category of ['mode', 'format', 'genre', 'audience'] as ProjectTagsType[]) {
@@ -91,8 +94,8 @@ export default function ProjectsModule({status, projects}: {status: ProjectStatu
   const displayProjects = status === 'implementation' && view === 'slider' ? filteredProjects : visibleProjects
 
   return (
-    <section data-section="projects-index" className={cn(BOX, 'space-y-6 sm:space-y-5')}>
-      <div data-module="headline-projects" className="flex items-center justify-between">
+    <section data-section="projects-index" className="space-y-6 sm:space-y-5">
+      <div data-module="headline-projects" className={cn(BOX, 'flex items-center justify-between')}>
         <H1 className="text-foreground-light">{status === 'implementation' ? 'Проекты в реализации' : 'Свободные сценарии'}</H1>
 
         <div className="flex items-center gap-4">
@@ -100,7 +103,7 @@ export default function ProjectsModule({status, projects}: {status: ProjectStatu
             <div className="flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant={activeFiltersCount > 0 ? 'default' : 'outline'}>Фильтры {activeFiltersCount > 0 && <div className="block px-1.5 bg-background rounded-sm aspect-square">{activeFiltersCount}</div>}</Button>
+                  <Button>Фильтры {activeFiltersCount > 0 && <div className="block px-1.5 bg-background rounded-sm aspect-square">{activeFiltersCount}</div>}</Button>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent side={'left'}>
@@ -151,7 +154,7 @@ export default function ProjectsModule({status, projects}: {status: ProjectStatu
       </div>
 
       {status === 'implementation' && view === 'slider' ? (
-        <ProjectsSlider projects={displayProjects} /> // only for implementation
+        <ProjectsSlider projects={displayProjects} />
       ) : (
         <>
           <ProjectsGrid projects={displayProjects} projectTags={projectTags} />
@@ -172,8 +175,8 @@ function ProjectsGrid({projects, projectTags}: {projects: Project[]; projectTags
   const projectFirstTags = projectTags.map((p) => [p.mode[0], p.audience[0]].filter(Boolean))
 
   return (
-    <div data-module="grid-projects" className="grid grid-cols-3 sm:grid-cols-1 gap-4 xl:gap-3 sm:gap-2.5">
-      {projects.map((project, index) => (
+    <div data-module="grid-projects" className={cn(BOX, 'grid grid-cols-3 sm:grid-cols-1 gap-4 xl:gap-3 sm:gap-2.5')}>
+      {projects.map((project, idx) => (
         <div data-item="card-grid-projects" className={cn('relative', 'bg-gray-dark rounded-[10px] overflow-hidden', 'group')} key={project.id}>
           <div className={cn('absolute z-50 inset-0 size-full', 'flex items-end')}>
             <div className={cn('w-full p-5 xl:p-4 sm:p-3', 'space-y-1 sm:space-y-1.25', 'bg-linear-to-t from-gray-dark via-gray-dark/80 to-transparent')}>
@@ -182,8 +185,8 @@ function ProjectsGrid({projects, projectTags}: {projects: Project[]; projectTags
               <div className={cn('flex flex-wrap gap-2.5', 'divide-x divide-gray-medium')}>
                 {project.details.screenwriter && <SPAN className={cn('pr-2.5 last:pr-0', 'text-foreground-light')}>{project.details.screenwriter}</SPAN>}
 
-                {projectFirstTags[index].map((tag, tagIndex) => (
-                  <SPAN className={cn('pr-2.5 last:pr-0', 'text-foreground-light')} key={tagIndex}>
+                {projectFirstTags[idx].map((tag, idx) => (
+                  <SPAN className={cn('pr-2.5 last:pr-0', 'text-foreground-light')} key={idx}>
                     {tag}
                   </SPAN>
                 ))}
@@ -191,7 +194,7 @@ function ProjectsGrid({projects, projectTags}: {projects: Project[]; projectTags
             </div>
           </div>
 
-          <PayloadImage className={cn('size-full object-contain', 'group-hover:scale-[1.02] duration-400')} resource={project.poster} />
+          <PayloadImage className={cn('size-full object-contain', 'group-hover:scale-[1.03] ease-in-out duration-400')} resource={project.poster} />
         </div>
       ))}
     </div>
@@ -199,9 +202,38 @@ function ProjectsGrid({projects, projectTags}: {projects: Project[]; projectTags
 }
 
 function ProjectsSlider({projects}: {projects: Project[]}) {
+  const autoplayPlugin = Autoplay({
+    delay: 2500,
+    // stopOnMouseEnter: true,
+    // stopOnInteraction: true,
+  })
+
   return (
-    <div data-module="slider-projects" className="w-full">
-      <div className="text-center text-gray-500 py-8">Слайдер в разработке ({projects.length})</div>
-    </div>
+    <Carousel
+      data-module="slider-projects"
+      opts={{
+        loop: true,
+        align: 'start',
+        slidesToScroll: 1,
+      }}
+      plugins={[autoplayPlugin]}
+      className="w-full"
+    >
+      <CarouselContent className="">
+        {projects.map((project, idx) => (
+          <CarouselItem className="basis-1/3 sm:basis-full" key={idx}>
+            <div data-item="card-slider-projects" className={cn('basis-1/3 sm:basis-full', 'relative', 'bg-gray-dark rounded-[10px] sm:rounded-none overflow-hidden', 'group')}>
+              <PayloadImage className={cn('size-full object-contain', 'group-hover:scale-[1.03] ease-in-out duration-400')} resource={project.poster} />
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+
+      <CarouselPrevious className="z-50 left-4 sm:left-2 cursor-pointer hover:scale-[1.05] duration-400" />
+      <CarouselNext className="z-50 right-4 sm:right-2 cursor-pointer hover:scale-[1.05] duration-400" />
+
+      <div className={cn('sm:hidden', 'absolute top-0 left-0', 'w-[10vw] h-full', 'bg-linear-to-r from-background via-background/70 to-transparent')}></div>
+      <div className={cn('sm:hidden', 'absolute top-0 right-0', 'w-[10vw] h-full', 'bg-linear-to-l from-background via-background/70 to-transparent')}></div>
+    </Carousel>
   )
 }
