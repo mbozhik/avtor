@@ -20,6 +20,7 @@ export default {
       },
 
       gray: {
+        DEFAULT: '#343335',
         light: '#D0D0D0',
         medium: '#6E6D6F',
         dark: '#151416',
