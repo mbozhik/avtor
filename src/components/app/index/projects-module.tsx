@@ -3,13 +3,13 @@
 import type {PaginatedDocs} from 'payload'
 import type {Project, Tag} from '@payload-types'
 import type {ProjectStatus} from '~~/index/projects'
+import type {EmblaCarouselType, EmblaEventType} from 'embla-carousel'
 import {BOX} from '~/global/container'
 
 import {cn} from '@/lib/utils'
 import {decomposeProjectTags, type ProjectTagsType} from '@/utils/decompose-relationship'
 
-import {useState} from 'react'
-
+import {useState, useCallback, useEffect, useRef} from 'react'
 import Autoplay from 'embla-carousel-autoplay'
 
 import {Button} from '~/ui/button'
@@ -194,7 +194,7 @@ function ProjectsGrid({projects, projectTags}: {projects: Project[]; projectTags
             </div>
           </div>
 
-          <PayloadImage className={cn('size-full object-contain', 'group-hover:scale-[1.03] ease-in-out duration-400')} resource={project.poster} />
+          <PayloadImage className={cn('size-full object-contain', 'group-hover:scale-[1.02] ease-in-out duration-400')} resource={project.poster} />
         </div>
       ))}
     </div>
@@ -208,22 +208,93 @@ function ProjectsSlider({projects}: {projects: Project[]}) {
     // stopOnInteraction: true,
   })
 
+  const TWEEN_FACTOR_BASE = 0.2
+
+  const [emblaApi, setEmblaApi] = useState<EmblaCarouselType>()
+  const tweenFactor = useRef(0)
+  const tweenNodes = useRef<HTMLElement[]>([])
+
+  const setTweenNodes = useCallback((emblaApi: EmblaCarouselType): void => {
+    tweenNodes.current = emblaApi.slideNodes().map((slideNode) => {
+      return slideNode.querySelector('.parallax-layer') as HTMLElement
+    })
+  }, [])
+
+  const setTweenFactor = useCallback((emblaApi: EmblaCarouselType) => {
+    tweenFactor.current = TWEEN_FACTOR_BASE * emblaApi.scrollSnapList().length
+  }, [])
+
+  const tweenParallax = useCallback((emblaApi: EmblaCarouselType, eventName?: EmblaEventType) => {
+    const engine = emblaApi.internalEngine()
+    const scrollProgress = emblaApi.scrollProgress()
+    const slidesInView = emblaApi.slidesInView()
+    const isScrollEvent = eventName === 'scroll'
+
+    emblaApi.scrollSnapList().forEach((scrollSnap, snapIndex) => {
+      let diffToTarget = scrollSnap - scrollProgress
+      const slidesInSnap = engine.slideRegistry[snapIndex]
+
+      slidesInSnap.forEach((slideIndex) => {
+        if (isScrollEvent && !slidesInView.includes(slideIndex)) return
+
+        if (engine.options.loop) {
+          engine.slideLooper.loopPoints.forEach((loopItem) => {
+            const target = loopItem.target()
+
+            if (slideIndex === loopItem.index && target !== 0) {
+              const sign = Math.sign(target)
+
+              if (sign === -1) {
+                diffToTarget = scrollSnap - (1 + scrollProgress)
+              }
+              if (sign === 1) {
+                diffToTarget = scrollSnap + (1 - scrollProgress)
+              }
+            }
+          })
+        }
+
+        const translate = diffToTarget * (-1 * tweenFactor.current) * 100
+        const tweenNode = tweenNodes.current[slideIndex]
+        if (tweenNode) {
+          tweenNode.style.transform = `translateX(${translate}%)`
+        }
+      })
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!emblaApi) return
+
+    setTweenNodes(emblaApi)
+    setTweenFactor(emblaApi)
+    tweenParallax(emblaApi)
+
+    emblaApi.on('reInit', setTweenNodes).on('reInit', setTweenFactor).on('reInit', tweenParallax).on('scroll', tweenParallax).on('slideFocus', tweenParallax)
+  }, [emblaApi, tweenParallax, setTweenNodes, setTweenFactor])
+
   return (
     <Carousel
       data-module="slider-projects"
+      setApi={setEmblaApi}
       opts={{
         loop: true,
-        align: 'start',
+        align: 'center',
         slidesToScroll: 1,
+        containScroll: 'trimSnaps',
       }}
       plugins={[autoplayPlugin]}
       className="w-full"
     >
-      <CarouselContent className="">
+      <CarouselContent className="-ml-4">
         {projects.map((project, idx) => (
-          <CarouselItem className="basis-1/3 sm:basis-full" key={idx}>
-            <div data-item="card-slider-projects" className={cn('basis-1/3 sm:basis-full', 'relative', 'bg-gray-dark rounded-[10px] sm:rounded-none overflow-hidden', 'group')}>
-              <PayloadImage className={cn('size-full object-contain', 'group-hover:scale-[1.03] ease-in-out duration-400')} resource={project.poster} />
+          <CarouselItem className="pl-4 basis-[50%] sm:basis-full" key={idx}>
+            <div data-item="card-slider-projects" className={cn('relative', 'bg-gray-dark rounded-[10px] sm:rounded-none overflow-hidden', 'group', 'transition-all duration-500 ease-out')}>
+              <div className="parallax overflow-hidden">
+                <div className="parallax-layer w-full h-full will-change-transform">
+                  <PayloadImage className={cn('size-full object-contain', 'group-hover:scale-[1.02] ease-in-out duration-500')} resource={project.poster} />
+                </div>
+              </div>
             </div>
           </CarouselItem>
         ))}
