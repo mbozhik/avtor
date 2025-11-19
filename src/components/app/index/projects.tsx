@@ -12,5 +12,9 @@ export default async function Projects({status}: {status: ProjectStatus}) {
     sort: 'createdAt',
   })
 
-  return <ProjectsModule status={status} projects={projects} />
+  const tags = await payload.find({
+    collection: 'tags',
+  })
+
+  return <ProjectsModule status={status} projects={projects} tags={tags} />
 }
