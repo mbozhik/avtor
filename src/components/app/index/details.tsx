@@ -8,6 +8,7 @@ import {payload} from '@/lib/payload'
 import {cn} from '@/lib/utils'
 
 import Image, {type StaticImageData} from 'next/image'
+import AnimatedCounter from '~~/index/details-counter'
 import {H3, P} from '~/ui/typography'
 
 type DetailOption = Detail['option']
@@ -48,7 +49,7 @@ export default async function Details() {
 
             {detail && (
               <div className="h-full pt-14 sm:pt-10 grid items-end justify-end pointer-events-none">
-                <div className={cn('-mb-6', 'text-[210px] xl:text-[160px] sm:text-[130px] leading-none! sm:leading-[1.1]! tracking-[-0.055em] font-semibold', 'text-gray-medium group-hover:text-foreground duration-300')}>{detail.value}</div>
+                <AnimatedCounter value={parseInt(detail.value.toString(), 10)} />
               </div>
             )}
           </div>
