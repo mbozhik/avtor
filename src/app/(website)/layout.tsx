@@ -8,6 +8,9 @@ import Header from '~/global/header'
 import Footer from '~/global/footer'
 import YandexMetrika from '~/global/analytics'
 
+export const dynamic = 'auto'
+export const revalidate = 3600 // 60 minutes (1 hour)
+
 export default function RootLayout({
   children,
 }: Readonly<{
