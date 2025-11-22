@@ -11,8 +11,8 @@ import {buildConfig} from 'payload'
 import {Users} from '@payload/collections/Users'
 import {Media} from '@payload/collections/Media'
 import {Details} from '@payload/collections/Details'
-import {Projects} from '@payload/collections/Projects'
 import {Tags} from '@payload/collections/Tags'
+import {Projects} from '@payload/collections/Projects'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,7 +25,7 @@ export default buildConfig({
     },
   },
 
-  collections: [Users, Media, Details, Projects, Tags],
+  collections: [Users, Media, Details, Tags, Projects],
 
   editor: lexicalEditor(),
   typescript: {
